@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #282c34;
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: auto;
+        }
+
+        #display {
+            grid-column: span 4;
+            padding: 10px;
+            font-size: 1.5em;
+            text-align: right;
+            background-color: #211e1e;
+            color: #61dafb;
+            border: none;
+            outline: none;
+            border-radius: 20px;
+    
+        }
+
+        button {
+            padding: 15px;
+            font-size: 1em;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            background-color: #61dafb;
+            color: #282c34;
+            border-radius: 20px;
+        }
+
+        button:active {
+            background-color: #43a047;
+        }
+
+        button.operator {
+            background-color: #ff8c00;
+            color: #fff;
+        }
+
+        button.double {
+            grid-column: span 2;
+        }
+
+        button.clear {
+            background-color: #b54745;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="calculator">
+        <input type="text" id="display" readonly>
+        <button class="clear">C</button>
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button class="operator">/</button>
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button class="operator">*</button>
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button class="operator">-</button>
+        <button class="double">0</button>
+        <button>.</button>
+        <button class="operator">=</button>
+        <button class="operator double">+</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const display = document.getElementById("display");
+            const buttons = document.querySelectorAll("button");
+
+            let currentInput = "";
+            let operator = "";
+            let firstInput = null;
+
+            buttons.forEach((button) => {
+                button.addEventListener("click", handleClick);
+            });
+
+            function handleClick() {
+                const buttonText = this.innerText;
+
+                switch (buttonText) {
+                    case "=":
+                        calculate();
+                        break;
+                    case "C":
+                        clear();
+                        break;
+                    default:
+                        handleInput(buttonText);
+                        break;
+                }
+
+                updateDisplay();
+            }
+
+            function handleInput(value) {
+                if (value === "+" || value === "-" || value === "*" || value === "/") {
+                    if (operator !== "") {
+                        calculate();
+                    }
+                    operator = value;
+                    firstInput = currentInput;
+                    currentInput = "";
+                } else {
+                    currentInput += value;
+                }
+            }
+
+            function calculate() {
+                if (operator && firstInput !== null) {
+                    switch (operator) {
+                        case "+":
+                            currentInput = String(parseFloat(firstInput) + parseFloat(currentInput));
+                            break;
+                        case "-":
+                            currentInput = String(parseFloat(firstInput) - parseFloat(currentInput));
+                            break;
+                        case "*":
+                            currentInput = String(parseFloat(firstInput) * parseFloat(currentInput));
+                            break;
+                        case "/":
+                            currentInput = String(parseFloat(firstInput) / parseFloat(currentInput));
+                            break;
+                        default:
+                            break;
+                    }
+                    operator = "";
+                    firstInput = null;
+                }
+            }
+
+            function clear() {
+                currentInput = "";
+                operator = "";
+                firstInput = null;
+            }
+
+            function updateDisplay() {
+                display.value = currentInput || "0";
+            }
+        });
+    </script>
+</body>
+
+</html>
